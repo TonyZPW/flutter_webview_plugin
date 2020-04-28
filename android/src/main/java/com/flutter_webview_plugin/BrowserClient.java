@@ -87,6 +87,7 @@ public class BrowserClient extends WebViewClient {
         data.put("type", isInvalid ? "abortLoad" : "shouldStart");
 
         FlutterWebviewPlugin.channel.invokeMethod("onState", data);
+        FlutterWebviewPlugin.channel.invokeMethod("onUrlChanged", data);
         return isInvalid;
     }
 
