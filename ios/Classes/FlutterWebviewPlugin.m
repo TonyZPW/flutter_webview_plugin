@@ -394,10 +394,9 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
 
     if (navigationAction.navigationType == WKNavigationTypeBackForward) {
         [channel invokeMethod:@"onBackPressed" arguments:nil];
-    } else if (!isInvalid) {
-        id data = @{@"url": navigationAction.request.URL.absoluteString};
-        [channel invokeMethod:@"onUrlChanged" arguments:data];
     }
+    
+    [channel invokeMethod:@"onUrlChanged" arguments:data];
 
     if (_enableAppScheme ||
         ([webView.URL.scheme isEqualToString:@"http"] ||
