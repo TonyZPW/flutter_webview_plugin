@@ -79,7 +79,11 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
         [self onCanGoForward:call result:result];
     } else if ([@"cleanCache" isEqualToString:call.method]) {
         [self cleanCache:result];
-    } else {
+    }
+    else if ([@"hideKeyboard" isEqualToString:call.method]) {
+               [self.webview endEditing:YES];
+    }
+    else {
         result(FlutterMethodNotImplemented);
     }
 }
@@ -394,9 +398,10 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
 
     if (navigationAction.navigationType == WKNavigationTypeBackForward) {
         [channel invokeMethod:@"onBackPressed" arguments:nil];
+    } else if (!isInvalid) {
+        id data = @{@"url": navigationAction.request.URL.absoluteString};
+        [channel invokeMethod:@"onUrlChanged" arguments:data];
     }
-    
-    [channel invokeMethod:@"onUrlChanged" arguments:data];
 
     if (_enableAppScheme ||
         ([webView.URL.scheme isEqualToString:@"http"] ||
@@ -406,9 +411,6 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
          if (isInvalid) {
             decisionHandler(WKNavigationActionPolicyCancel);
          } else {
-             
-            [self handleSpecialFile:webView navigationAction:navigationAction];
-             
             decisionHandler(WKNavigationActionPolicyAllow);
          }
     } else {
@@ -424,19 +426,6 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
     }
 
     return nil;
-}
-
-- (void)handleSpecialFile:(WKWebView *)webView navigationAction:(WKNavigationAction *)navigationAction{
-    
-                NSString *_webUrlStr = navigationAction.request.URL.absoluteString;
-                   NSString *lastName =[[_webUrlStr lastPathComponent] lowercaseString];
-
-                   if ([lastName containsString:@".pdf"])
-                   {
-                       NSData *data = [NSData dataWithContentsOfURL:navigationAction.request.URL];
-                       
-                       [webView loadData:data MIMEType:@"application/pdf" characterEncodingName:@"UTF-8" baseURL:nil];
-                   }
 }
 
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {

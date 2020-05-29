@@ -256,6 +256,8 @@ class FlutterWebviewPlugin {
   // Hides the webview
   Future<Null> hide() async => await _channel.invokeMethod('hide');
 
+  Future<Null> hideKeyboard() async => await _channel.invokeMethod('hideKeyboard');
+
   // Shows the webview
   Future<Null> show() async => await _channel.invokeMethod('show');
 
