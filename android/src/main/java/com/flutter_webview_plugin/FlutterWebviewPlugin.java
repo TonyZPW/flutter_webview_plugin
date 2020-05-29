@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.os.IBinder;
 import android.view.Display;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebStorage;
 import android.widget.FrameLayout;
@@ -303,8 +304,14 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
     }
 
     private void hideKeyboard(MethodCall call, final MethodChannel.Result result) {
-        
-        hideKeyboard( webViewManager.webView.getFocusedChild().getWindowToken());
+
+        View v = webViewManager.webView.getFocusedChild();
+
+        if(v != null){
+            
+            hideKeyboard( v.getWindowToken());
+        }
+
         result.success(null);
     }
 
