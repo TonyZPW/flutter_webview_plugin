@@ -305,12 +305,7 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
 
     private void hideKeyboard(MethodCall call, final MethodChannel.Result result) {
 
-        View v = webViewManager.webView.getFocusedChild();
-
-        if(v != null){
-            
-            hideKeyboard( v.getWindowToken());
-        }
+        hideKeyboard( webViewManager.webView.getWindowToken());
 
         result.success(null);
     }
