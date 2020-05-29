@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
+import android.os.IBinder;
 import android.view.Display;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebStorage;
 import android.widget.FrameLayout;
 import android.webkit.CookieManager;
@@ -72,6 +74,9 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
                 break;
             case "hide":
                 hide(call, result);
+                break;
+            case "hideKeyboard":
+                hideKeyboard(call, result);
                 break;
             case "show":
                 show(call, result);
@@ -288,6 +293,18 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
         if (webViewManager != null) {
             webViewManager.hide(call, result);
         }
+        result.success(null);
+    }
+    private void hideKeyboard(IBinder token) {
+        if (token != null) {
+            InputMethodManager im = (InputMethodManager) context.getSystemService(context.INPUT_METHOD_SERVICE);
+            im.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    private void hideKeyboard(MethodCall call, final MethodChannel.Result result) {
+        
+        hideKeyboard( webViewManager.webView.getFocusedChild().getWindowToken());
         result.success(null);
     }
 
